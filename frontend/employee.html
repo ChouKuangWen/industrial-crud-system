@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>員工資料 CRUD 系統</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="p-4">
+  <div class="container">
+    <h2 class="mb-4">員工資料管理系統</h2>
+
+    <!-- 🚦 CRUD 操作選單 -->
+    <div class="mb-4">
+      <label class="form-label">請選擇操作：</label>
+      <select id="crudSelect" class="form-select" onchange="switchMode()">
+        <option value="">-- 請選擇 --</option>
+        <option value="create">C - 新增員工</option>
+        <option value="read">R - 查詢員工</option>
+        <option value="update">U - 修改員工</option>
+        <option value="delete">D - 刪除員工</option>
+      </select>
+    </div>
+
+    <!-- ✅ C：新增 -->
+    <div id="createBox" class="crud-box" style="display:none">
+      <h4>➕ 新增員工</h4>
+      <input id="c_factory_id" type="number" class="form-control mb-2" placeholder="所屬工廠 ID">
+      <input id="c_name" class="form-control mb-2" placeholder="員工姓名">
+      <input id="c_position" class="form-control mb-2" placeholder="職位">
+      <input id="c_phone" class="form-control mb-2" placeholder="聯絡電話">
+      <input id="c_hire_date" type="date" class="form-control mb-2" placeholder="入職日期">
+      <button class="btn btn-primary" onclick="createEmployee()">新增</button>
+    </div>
+
+    <!-- 🔍 R：查詢 -->
+    <div id="readBox" class="crud-box" style="display:none">
+      <h4>🔍 查詢員工</h4>
+      <input id="r_keyword" class="form-control mb-2" placeholder="輸入員工姓名關鍵字">
+      <button class="btn btn-secondary mb-2" onclick="readEmployees()">查詢</button>
+      <table class="table table-bordered">
+        <thead><tr><th>ID</th><th>姓名</th><th>工廠ID</th><th>職位</th><th>電話</th><th>入職日期</th></tr></thead>
+        <tbody id="readTable"></tbody>
+      </table>
+    </div>
+
+    <!-- 📝 U：修改 -->
+    <div id="updateBox" class="crud-box" style="display:none">
+      <h4>📝 修改員工</h4>
+      <input id="u_id" type="number" class="form-control mb-2" placeholder="輸入欲修改員工 ID">
+      <button class="btn btn-warning mb-3" onclick="loadUpdateEmployee()">載入資料</button>
+      <div id="updateForm" style="display:none">
+        <input id="u_factory_id" type="number" class="form-control mb-2" placeholder="所屬工廠 ID">
+        <input id="u_name" class="form-control mb-2" placeholder="員工姓名">
+        <input id="u_position" class="form-control mb-2" placeholder="職位">
+        <input id="u_phone" class="form-control mb-2" placeholder="聯絡電話">
+        <input id="u_hire_date" type="date" class="form-control mb-2" placeholder="入職日期">
+        <button class="btn btn-success" onclick="updateEmployee()">儲存修改</button>
+      </div>
+    </div>
+
+    <!-- ❌ D：刪除 -->
+    <div id="deleteBox" class="crud-box" style="display:none">
+      <h4>❌ 刪除員工</h4>
+      <input id="d_id" type="number" class="form-control mb-2" placeholder="輸入員工 ID">
+      <button class="btn btn-danger" onclick="deleteEmployee()">刪除</button>
+    </div>
+  </div>
+
+  <script>
+    const api = "http://localhost:8000/employees";
+
+    function switchMode() {
+      document.querySelectorAll(".crud-box").forEach(box => box.style.display = "none");
+      const mode = document.getElementById("crudSelect").value;
+      if (mode) document.getElementById(mode + "Box").style.display = "block";
+    }
+
+    async function createEmployee() {
+      const employee = {
+        factory_id: parseInt(document.getElementById("c_factory_id").value),
+        name: document.getElementById("c_name").value,
+        position: document.getElementById("c_position").value,
+        phone: document.getElementById("c_phone").value,
+        hire_date: document.getElementById("c_hire_date").value
+      };
+      try {
+        await axios.post(api, employee);
+        alert("✅ 新增成功");
+      } catch (err) {
+        alert("❌ 錯誤：" + (err.response?.data?.detail || err.message));
+      }
+    }
+
+    async function readEmployees() {
+      const keyword = document.getElementById("r_keyword").value.toLowerCase();
+      const res = await axios.get(api);
+      const table = document.getElementById("readTable");
+      table.innerHTML = "";
+      res.data.forEach(e => {
+        if (e.name.toLowerCase().includes(keyword)) {
+          table.innerHTML += `<tr>
+            <td>${e.employee_id}</td><td>${e.name}</td>
+            <td>${e.factory_id}</td><td>${e.position || ""}</td>
+            <td>${e.phone || ""}</td><td>${e.hire_date || ""}</td>
+          </tr>`;
+        }
+      });
+    }
+
+    async function loadUpdateEmployee() {
+      const id = document.getElementById("u_id").value;
+      try {
+        const res = await axios.get(`${api}/${id}`);
+        const e = res.data;
+        document.getElementById("u_factory_id").value = e.factory_id;
+        document.getElementById("u_name").value = e.name;
+        document.getElementById("u_position").value = e.position;
+        document.getElementById("u_phone").value = e.phone;
+        document.getElementById("u_hire_date").value = e.hire_date || "";
+        document.getElementById("updateForm").style.display = "block";
+      } catch (err) {
+        alert("❌ 找不到員工");
+        document.getElementById("updateForm").style.display = "none";
+      }
+    }
+
+    async function updateEmployee() {
+      const id = document.getElementById("u_id").value;
+      const employee = {
+        factory_id: parseInt(document.getElementById("u_factory_id").value),
+        name: document.getElementById("u_name").value,
+        position: document.getElementById("u_position").value,
+        phone: document.getElementById("u_phone").value,
+        hire_date: document.getElementById("u_hire_date").value
+      };
+      try {
+        await axios.put(`${api}/${id}`, employee);
+        alert("✅ 修改成功");
+      } catch (err) {
+        alert("❌ 修改失敗：" + err.message);
+      }
+    }
+
+    async function deleteEmployee() {
+      const id = document.getElementById("d_id").value;
+      if (!confirm(`確定要刪除員工 ID ${id} 嗎？`)) return;
+      try {
+        await axios.delete(`${api}/${id}`);
+        alert("✅ 刪除成功");
+      } catch (err) {
+        alert("❌ 刪除失敗：" + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
