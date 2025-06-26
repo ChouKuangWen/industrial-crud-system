@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text  # 建立資料庫連線引擎
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine  # 建立資料庫連線引擎
 from sqlalchemy.orm import sessionmaker, declarative_base  #產生DB session、建立 ORM 基底類別
 from dotenv import load_dotenv
 import os
@@ -15,14 +15,11 @@ db_name = os.getenv("db_name")
 db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4"
 
 # 建立資料庫連線引擎  建立 SessionLocal  宣告ORM
-engine = create_engine(db_url, echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(db_url, echo=True)
+AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base()
 
 # ⚡ FastAPI Dependency：產生一個 DB Session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
