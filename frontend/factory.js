@@ -1,4 +1,4 @@
-const api = "http://localhost:8000/factories";
+const api = "http://127.0.0.1:8000/factories";
 
 function switchMode() {
   document.querySelectorAll(".crud-box").forEach(box => box.style.display = "none");

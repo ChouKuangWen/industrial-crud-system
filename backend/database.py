@@ -11,12 +11,12 @@ db_host = os.getenv("db_host")
 db_port = os.getenv("db_port")
 db_name = os.getenv("db_name")
 
-# mysql+pymysql://帳號:密碼@主機:埠號/資料庫?參數
-db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4"
+# mysql+asyncmy://帳號:密碼@主機:埠號/資料庫?參數
+db_url = f"mysql+asyncmy://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4"
 
 # 建立資料庫連線引擎  建立 SessionLocal  宣告ORM
-engine = create_async_engine(db_url, echo=True)
-AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+async_engine = create_async_engine(db_url, echo=True)
+AsyncSessionLocal = sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base()
 
 # ⚡ FastAPI Dependency：產生一個 DB Session
