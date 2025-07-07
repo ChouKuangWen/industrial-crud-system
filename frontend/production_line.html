@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8">
+        <title>生產線資料 CRUD 系統</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="p-4">
+        <div class="container">
+            <h2 class="mb-4">生產線資料管理系統</h2>
+            
+            <!-- 🚦 CRUD 操作選單 -->
+            <div class="mb-4">
+              <label class="form-label">請選擇操作：</label>
+              <select id="crudSelect" class="form-select" onchange="switchMode()">
+                  <option value="">請選擇</option>
+                  <option value="create">C - 新增生產線</option>
+                  <option value="read">R - 查詢生產線</option>
+                  <option value="updata">U - 修改生產線</option>
+                  <option value="delete">D - 刪除生產線</option>
+              </select>
+            </div>
+
+            <!-- ✅ C：新增 -->
+            <div id="createBox" class="crud-box" style="display:none">
+              <h4>➕ 新增生產線</h4>
+              <input id="c_name" class="form-control mb-2" placeholder="生產線名稱">
+              <input id="c_factory" class="form-control mb-2" placeholder="所屬工廠">
+              <select id="c_status" class="form-control mb-2">
+                <option value="運作中">運作中</option>
+                <option value="停工中">停工中</option>
+                <option value="維修中">維修中</option>
+              </select>
+              <input id="c_capacity_per_day" type="number" class="form-control mb-2" placeholder="每日最大產能">
+              <button class="btn btn-primary" onclick="createProduct_line()">新增</button>
+            </div>
+
+            <!-- 🔍 R：查詢 -->
+            <div id="readBox" class="crud-box" style="display:none">
+              <h4>🔍 查詢生產線</h4>
+              <input id="r_keyword" class="form-control mb-2" placeholder="輸入生產線關鍵字">
+              <button class="btn btn-secondary mb-2" onclick="readProduct_line()">查詢</button>
+              <table class="table table-bordered">
+                <thead><tr><th>ID</th><th>生產線名稱</th><th>狀態</th><th>每日最大產能</th></tr></thead>
+                <tbody id="readTable"></tbody>
+              </table>
+            </div>
+
+            <!-- 📝 U：修改 -->
+            <div id="updateBox" class="crud-box" style="display:none">
+              <h4>📝 修改生產線</h4>
+              <input id="u_id" class="form-control mb-2" placeholder="輸入欲修改生產線ID">
+              <button class="btn btn-warning mb-3" onclick="loadUpdateProduct_line()">載入資料</button>
+              <div id="updateForm" style="display:none">
+                <input id="u_name" class="form-control mb-2" placeholder="生產線名稱">
+                <input id="u_factory" class="form-control mb-2" placeholder="所屬工廠">
+                <select id="u_status" class="form-control mb-2">
+                  <option value="運作中">運作中</option>
+                  <option value="停工中">停工中</option>
+                  <option value="維修中">維修中</option>
+                </select>
+                <input id="u_capacity_per_day" type="number" class="form-control mb-2" placeholder="每日最大產能">   
+                <button class="btn btn-success" onclick="updateProduct_line()">儲存修改</button>
+              </div>
+            </div>
+
+            <!-- ❌ D：刪除 -->
+            <div id="deleteBox" class="crud-box" style="display:none">
+              <h4>❌ 刪除生產線</h4>
+              <input id="d_id" class="form-control mb-2" placeholder="輸入生產線ID">
+              <button class="btn btn-danger" onclick="deleteProduct_line()">刪除</button>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>src="production_line.js"</script>
+    </body>
+</html>

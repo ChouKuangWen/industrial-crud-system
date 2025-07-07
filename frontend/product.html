@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>產品資料 CRUD 系統</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+  <div class="container">
+    <h2 class="mb-4">產品資料管理系統</h2>
+
+    <!-- 🚦 CRUD 操作選單 -->
+    <div class="mb-4">
+      <label class="form-label">請選擇操作：</label>
+      <select id="crudSelect" class="form-select" onchange="switchMode()">
+        <option value="">-- 請選擇 --</option>
+        <option value="create">C - 新增新增</option>
+        <option value="read">R - 查詢新增</option>
+        <option value="update">U - 修改新增</option>
+        <option value="delete">D - 刪除新增</option>
+      </select>
+    </div>
+
+    <!-- ✅ C：新增 -->
+    <div id="createBox" class="crud-box" style="display:none">
+      <h4>➕ 新增產品</h4>
+      <input id="c_name" class="form-control mb-2" placeholder="產品名稱">
+      <input id="c_catagory" class="form-control mb-2" placeholder="類別">
+      <input id="c_price" type="number" class="form-control mb-2" placeholder="價格">
+      <input id="c_spec" class="form-control mb-2" placeholder="型號">
+      <button class="btn btn-primary" onclick="createProduct()">新增</button>
+    </div>
+
+    <!-- 🔍 R：查詢 -->
+    <div id="readBox" class="crud-box" style="display:none">
+      <h4>🔍 查詢產品</h4>
+      <input id="r_keyword" class="form-control mb-2" placeholder="輸入商品名稱關鍵字">
+      <button class="btn btn-secondary mb-2" onclick="readProduct()">查詢</button>
+      <table class="table table-bordered">
+        <thead><tr><th>ID</th><th>名稱</th><th>類別</th><th>價格</th><th>型號</th></tr></thead>
+        <tbody id="readTable"></tbody>
+      </table>
+    </div>
+
+    <!-- 📝 U：修改 -->
+    <div id="updateBox" class="crud-box" style="display:none">
+      <h4>📝 修改產品</h4>
+      <input id="u_id" class="form-control mb-2" placeholder="輸入欲修改產品ID">
+      <button class="btn btn-warning mb-3" onclick="loadUpdateProduct()">載入資料</button>
+      <div id="updateForm" style="display:none">
+        <input id="u_name" class="form-control mb-2" placeholder="產品名稱">
+        <input id="u_catagory" class="form-control mb-2" placeholder="類別">
+        <input id="u_price" type="number" class="form-control mb-2" placeholder="價格">
+        <input id="u_spec" class="form-control mb-2" placeholder="型號">
+        <button class="btn btn-success" onclick="updateProduct  ()">儲存修改</button>
+      </div>
+    </div>
+
+    <!-- ❌ D：刪除 -->
+    <div id="deleteBox" class="crud-box" style="display:none">
+      <h4>❌ 刪除產品</h4>
+      <input id="d_id" class="form-control mb-2" placeholder="輸入生產線ID">
+      <button class="btn btn-danger" onclick="deleteProduct()">刪除</button>
+    </div>
+  </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>src="product.js"</script>
+
+</body>
+</html>

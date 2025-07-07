@@ -64,7 +64,7 @@ class ProductionRecord(Base):
     product_id = Column(Integer, ForeignKey("product.product_id"), nullable=False)  # 產品外鍵，必填
     produced_quantity = Column(Integer, nullable=False, comment="生產數量")  # 生產數量，必填
     produced_date = Column(Date, nullable=False, comment="生產日期")  # 生產日期，必填
-    shift = Column(Enum("白班", "夜班"), default="白班", comment="班次")  # 班次，預設白班
+    shift = Column(Enum("日班", "夜班"), default="日班", comment="班次")  # 班次，預設日班
     operator_id = Column(Integer, ForeignKey("employee.employee_id"), comment="操作員")  # 操作員外鍵，可空
 
     # 連回生產線，多對一
