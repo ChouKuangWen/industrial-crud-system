@@ -69,6 +69,7 @@ async function updateProduct() {
   }
 }
 
+
 async function deleteProduct() {
   const id = document.getElementById("d_id").value;
   if (!confirm(`確定要刪除工廠 ID ${id} 嗎？`)) return;
