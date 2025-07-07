@@ -28,11 +28,12 @@ async function readProduct_record() {
   const table = document.getElementById("readTable");
   table.innerHTML = "";
   res.data.forEach(f => {
-    if (f.name.toLowerCase().includes(keyword)) {
+    if (f.product_id.toString().includes(keyword)) {
       table.innerHTML += `<tr>
-        <td>${f.record_id}</td><td>${f.name}</td>
-        <td>${f.factory_id}</td><td>${f.status}</td>
-        <td>${f.ecapacity_per_day || ""}</td>
+        <td>${f.record_id}</td><td>${f.line_id}</td>
+        <td>${f.product_id}</td><td>${f.produced_quantity}</td>
+        <td>${f.produced_date}</td><td>${f.shift}</td>
+        <td>${f.operator_id}</td>
       </tr>`;
     }
   });
@@ -43,10 +44,12 @@ async function loadUpdateProduct_record() {
   try {
     const res = await axios.get(`${api}/${id}`);
     const f = res.data;
-    document.getElementById("u_name").value = f.name;
-    document.getElementById("u_factory").value = f.factory_id;
-    document.getElementById("u_status").value = f.status;
-    document.getElementById("u_capacity_per_day").value = f.capacity_per_day || "";
+    document.getElementById("u_line_id").value = f.line_id;
+    document.getElementById("u_product_id").value = f.product_id;
+    document.getElementById("u_produced_quantity").value = f.produced_quantity;
+    document.getElementById("u_produced_date").value = f.produced_date;
+    document.getElementById("u_shift").value = f.shift;
+    document.getElementById("u_operator_id").value = f.operator_id;
     document.getElementById("updateForm").style.display = "block";
   } catch (err) {
     alert("❌ 找不到工廠");
@@ -56,14 +59,16 @@ async function loadUpdateProduct_record() {
 
 async function updateProduct_record() {
   const id = document.getElementById("u_id").value;
-  const product_line = {
-  name: document.getElementById("u_name").value,
-  factory_id: document.getElementById("u_factory").value,
-  status: document.getElementById("u_status").value,
-  capacity_per_day: parseInt(document.getElementById("u_capacity_per_day").value) || 0,
+  const product_record = {
+  line_id: document.getElementById("u_line_id").value,
+  product_id: document.getElementById("u_product_id").value,
+  produced_quantity: parseInt(document.getElementById("u_produced_quantity").value) || 0,
+  produced_date: document.getElementById("u_produced_date").value,
+  shift: document.getElementById("u_shift").value,
+  operator_id: document.getElementById("u_operator_id").value,
   };
   try {
-    await axios.put(`${api}/${id}`, product_line);
+    await axios.put(`${api}/${id}`, product_record);
     alert("✅ 修改成功");
   } catch (err) {
     lert("❌ 修改失敗：" + err.message);
