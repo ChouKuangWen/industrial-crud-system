@@ -1,4 +1,4 @@
-const api = "http://127.0.0.1:8000/lines";
+const api = "http://localhost:8000/lines";
 function switchMode() {
   document.querySelectorAll(".crud-box").forEach(box => box.style.display = "none");
   const mode = document.getElementById("crudSelect").value;
