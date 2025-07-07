@@ -85,4 +85,3 @@ async function deleteProduct_record() {
       alert("❌ 刪除失敗：" + err.message);
     }
 }
-     
